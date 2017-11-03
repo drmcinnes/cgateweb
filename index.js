@@ -40,6 +40,7 @@ var event = new net.Socket();
 var HOST = settings.cbusip;
 var COMPORT = 20023;
 var EVENTPORT = 20025;
+var LASTADDRESS = 256;
 
 var logging = settings.logging;
 
@@ -134,7 +135,10 @@ client.on('connect', function() { // When connected
               break;
 
             case "ON":
-              command.write('ON //'+settings.cbusname+'/'+parts[2]+'/'+parts[3]+'/'+parts[4]+'\n');
+              if (LASTADDRESS != parts[4]) {
+                command.write('ON //'+settings.cbusname+'/'+parts[2]+'/'+parts[3]+'/'+parts[4]+'\n');
+              }
+              LASTADDRESS = 256;
               break;
             case "OFF":
               command.write('OFF //'+settings.cbusname+'/'+parts[2]+'/'+parts[3]+'/'+parts[4]+'\n');
@@ -149,6 +153,7 @@ client.on('connect', function() { // When connected
                 } else {
                   command.write('RAMP //'+settings.cbusname+'/'+parts[2]+'/'+parts[3]+'/'+parts[4]+' '+num+'\n');
                 }
+                LASTADDRESS = parts[4];
               }
           }
           break;
